@@ -3,6 +3,7 @@ package com.sonu.distributed.service.impl;
 import com.sonu.distributed.model.CurrentWeatherStatistics;
 import com.sonu.distributed.model.DetailedWeatherStatistics;
 import com.sonu.distributed.model.ForecastWeatherStatistics;
+import com.sonu.distributed.model.ForecastWeatherStatisticsCollection;
 import com.sonu.distributed.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,16 +40,16 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public ForecastWeatherStatistics getForecastedWeather(double lat, double lon) {
-        Mono<ForecastWeatherStatistics> currentWeatherStatisticsMono = webClient.get()
-                .uri("/weather?lat="+lat+"&lon="+lon+"&appid=9880fec00cb7f6784318764a9620a0c9")
+    public ForecastWeatherStatisticsCollection getForecastedWeather(double lat, double lon) {
+        Mono<ForecastWeatherStatisticsCollection> currentWeatherStatisticsMono = webClient.get()
+                .uri("/forecast?lat="+lat+"&lon="+lon+"&appid=9880fec00cb7f6784318764a9620a0c9")
                 .retrieve()
-                .bodyToMono(ForecastWeatherStatistics.class);
-        ForecastWeatherStatistics forecastWeatherStatistics;
+                .bodyToMono(ForecastWeatherStatisticsCollection.class);
+        ForecastWeatherStatisticsCollection forecastWeatherStatisticsCollection;
         try {
-            forecastWeatherStatistics = currentWeatherStatisticsMono.block(Duration.of(5, ChronoUnit.SECONDS));
-            log.info("fetched forecasted weather [{}]", forecastWeatherStatistics);
-            return forecastWeatherStatistics;
+            forecastWeatherStatisticsCollection = currentWeatherStatisticsMono.block(Duration.of(5, ChronoUnit.SECONDS));
+            log.info("fetched forecasted weather [{}]", forecastWeatherStatisticsCollection);
+            return forecastWeatherStatisticsCollection;
         } catch (Exception e) {
             log.error("Could not fetch current weather data, due to: ", e);
             throw new RuntimeException(e);

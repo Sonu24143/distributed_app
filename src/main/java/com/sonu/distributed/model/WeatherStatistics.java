@@ -12,26 +12,26 @@ import lombok.ToString;
 @ToString
 public class WeatherStatistics {
     @JsonAlias("temp")
-    private float temperature;
+    private Float temperature;
 
     @JsonAlias("feels_like")
-    private float feelsLike;
+    private Float feelsLike;
 
     @JsonAlias("temp_min")
-    private float temperatureMin;
+    private Float temperatureMin;
 
     @JsonAlias("temp_max")
-    private float temperatureMax;
+    private Float temperatureMax;
 
     @JsonAlias("pressure")
-    private int pressure;
+    private Float pressure;
 
     @JsonAlias("humidity")
-    private int humidity;
+    private Float humidity;
 
     @JsonAlias("sea_level")
-    private int seaLevel;
+    private Float seaLevel;
 
     @JsonAlias("grnd_level")
-    private int groundLevel;
+    private Float groundLevel;
 }
