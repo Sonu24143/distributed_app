@@ -8,15 +8,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
+@EnableScheduling
 public class DistributedApplication implements ApplicationRunner {
-	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
 	@Autowired
 	private KafkaProducer<String, String> kafkaProducer;
 
@@ -29,10 +27,8 @@ public class DistributedApplication implements ApplicationRunner {
 
 		try {
 			log.info("Sending test message");
-			kafkaTemplate.send("Hello-Kafka", "Test Message kafka template"+System.currentTimeMillis());
 			kafkaProducer.send(new ProducerRecord<>("Hello-Kafka", "Test Message kafka producer"+System.currentTimeMillis()));
 		} finally {
-			kafkaTemplate.destroy();
 			kafkaProducer.close();
 		}
 	}
