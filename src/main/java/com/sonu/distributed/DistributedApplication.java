@@ -1,8 +1,10 @@
 package com.sonu.distributed;
 
+import com.sonu.distributed.service.impl.WordCountProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -15,8 +17,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class DistributedApplication implements ApplicationRunner {
-	@Autowired
-	private KafkaProducer<String, String> kafkaProducer;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DistributedApplication.class, args);
@@ -24,13 +24,7 @@ public class DistributedApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-
-		try {
-			log.info("Sending test message");
-			kafkaProducer.send(new ProducerRecord<>("Hello-Kafka", "Test Message kafka producer"+System.currentTimeMillis()));
-		} finally {
-			kafkaProducer.close();
-		}
+		//do nothing yet
 	}
 
 	@KafkaListener(topics = "Hello-Kafka", groupId = "test-consumer-group")
