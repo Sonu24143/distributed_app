@@ -1,16 +1,10 @@
 package com.sonu.distributed;
 
-import com.sonu.distributed.service.impl.WordCountProcessor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
@@ -25,10 +19,5 @@ public class DistributedApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//do nothing yet
-	}
-
-	@KafkaListener(topics = "Hello-Kafka", groupId = "test-consumer-group")
-	public void listen(String message) {
-		log.info("Consumed message [{}].", message);
 	}
 }
