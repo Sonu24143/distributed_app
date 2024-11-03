@@ -9,7 +9,7 @@ import lombok.ToString;
 @Table(name = "wind_stats")
 @Builder
 @Data
-@ToString()
+@ToString
 public class WindStatsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
