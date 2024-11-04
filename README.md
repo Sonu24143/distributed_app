@@ -5,6 +5,6 @@ This is a simple fun project which collects data points for
 
 (Data courtesy of https://openweathermap.org/)
 
-it tries to identify and provide deviation of actual vs predicted statistics near real time, helping understand how to leverage distributed computing to solve latency, availability and scale issues.
+Application tries to identify and provide deviation of actual vs predicted statistics near real time, providing a scenario to understand and leverage distributed computing to solve latency, availability and scale issues.
 
 **Author**: [Sonu24143](https://github.com/Sonu24143)
