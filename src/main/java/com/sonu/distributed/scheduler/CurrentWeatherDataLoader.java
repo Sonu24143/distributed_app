@@ -2,6 +2,7 @@ package com.sonu.distributed.scheduler;
 
 import com.sonu.distributed.model.CurrentWeatherStatistics;
 import com.sonu.distributed.service.WeatherService;
+import com.sonu.distributed.util.LogElapsedTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -38,6 +39,7 @@ public class CurrentWeatherDataLoader {
     private final AtomicInteger maxRetries = new AtomicInteger(5);
     JsonSerializer<CurrentWeatherStatistics> jsonSerializer = new JsonSerializer<>();
 
+    @LogElapsedTime
     @Scheduled(initialDelay = 1000, fixedDelay = 1100)
     public void execute() {
         long start = System.currentTimeMillis();
