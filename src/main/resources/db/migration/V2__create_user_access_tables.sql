@@ -1,11 +1,11 @@
-create table if not exists weather_anamoly_app.role_details (
+create table if not exists weather_anomaly_schema.role_details (
     id varchar(255) not null,
     name varchar(255) not null,
     enabled boolean not null,
     primary key (id, name)
 );
 
-create table if not exists weather_anamoly_app.user_details (
+create table if not exists weather_anomaly_schema.user_details (
     id varchar(255) not null,
     name varchar(255),
     username varchar(255) not null,
@@ -14,7 +14,7 @@ create table if not exists weather_anamoly_app.user_details (
     primary key(id, username)
 );
 
-create table if not exists weather_anamoly_app.user_role_mapping (
+create table if not exists weather_anomaly_schema.user_role_mapping (
     id varchar(255) not null,
     user_id varchar(255) not null,
     role_id varchar(255) not null,

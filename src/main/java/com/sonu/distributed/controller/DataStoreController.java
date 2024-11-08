@@ -1,5 +1,6 @@
 package com.sonu.distributed.controller;
 
+import com.sonu.distributed.config.qualifier.WordCountProcessorStreamBuilderConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -26,7 +27,7 @@ import static org.apache.kafka.streams.StoreQueryParameters.fromNameAndType;
 @RestController
 public class DataStoreController {
     @Autowired
-    private StreamsBuilderFactoryBean factoryBean;
+    @WordCountProcessorStreamBuilderConfig private StreamsBuilderFactoryBean streamsBuilderFactoryBean;
     @Autowired
     private KafkaProducer<Long, String> kafkaProducer;
 
@@ -42,7 +43,7 @@ public class DataStoreController {
 
     @GetMapping("/count/{word}")
     public long getCount(@PathVariable String word) throws ChangeSetPersister.NotFoundException {
-        KafkaStreams kafkaStreams = factoryBean.getKafkaStreams();
+        KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
         Function<ReadOnlyKeyValueStore<String, Long>, KeyValueIterator<String, Long>> keyValueIterator = ReadOnlyKeyValueStore::all;
         final ReadOnlyKeyValueStore<String, Long> store =
                 kafkaStreams.store(fromNameAndType("word-count", QueryableStoreTypes.keyValueStore()));
@@ -56,7 +57,7 @@ public class DataStoreController {
     @GetMapping("/count")
     public Map<String, Long> getCount() {
         Map<String, Long> response = new HashMap<>();
-        KafkaStreams kafkaStreams = factoryBean.getKafkaStreams();
+        KafkaStreams kafkaStreams = streamsBuilderFactoryBean.getKafkaStreams();
         Function<ReadOnlyKeyValueStore<String, Long>, KeyValueIterator<String, Long>> keyValueIterator = ReadOnlyKeyValueStore::all;
         final ReadOnlyKeyValueStore<String, Long> store = kafkaStreams.store(fromNameAndType("word-count", QueryableStoreTypes.keyValueStore()));
         final KeyValueIterator<String, Long> range = keyValueIterator.apply(store);

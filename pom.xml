@@ -105,6 +105,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -126,7 +131,7 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>6.5.7</version>
 				<configuration>
-					<url>jdbc:mysql://localhost:3306/weather_anamoly_app</url>
+					<url>jdbc:mysql://localhost:3306/weather_anomaly_schema</url>
 					<user>app_user</user>
 					<password>app_user</password>
 				</configuration>

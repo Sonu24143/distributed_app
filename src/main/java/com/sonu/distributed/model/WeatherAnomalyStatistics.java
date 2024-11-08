@@ -12,6 +12,8 @@ public class WeatherAnomalyStatistics {
     private Float temperatureMax;
     private Float pressure;
     private Float humidity;
+    private Long collectedTime;
+    private Long processedTime;
 
     public WeatherAnomalyStatistics apply(WeatherCorrelationData value) {
         if(value.getForecastWeatherStatistics() == null || value.getCurrentWeatherStatistics() == null) {
@@ -28,6 +30,8 @@ public class WeatherAnomalyStatistics {
         temperatureMax = forecast.getTemperatureMax() - current.getTemperatureMax();
         pressure = forecast.getPressure() - current.getPressure();
         humidity = forecast.getHumidity() - current.getHumidity();
+        collectedTime = value.getCurrentWeatherStatistics().getTimestamp();
+        processedTime = System.currentTimeMillis();
         return this;
     }
 }
