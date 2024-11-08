@@ -1,4 +1,4 @@
-create table if not exists weather_anamoly_app.weather_stats (
+create table if not exists weather_anomaly_schema.weather_stats (
 	id varchar(255) not null,
     temprature float,
     feels_like float,
@@ -17,7 +17,7 @@ create table if not exists weather_anamoly_app.weather_stats (
     primary key (id, collection_time)
 );
 
-create table if not exists weather_anamoly_app.weather_description (
+create table if not exists weather_anomaly_schema.weather_description (
 	id varchar(255) not null,
     weather_stats_id varchar(255) not null,
     type text,
@@ -26,7 +26,7 @@ create table if not exists weather_anamoly_app.weather_description (
     foreign key (weather_stats_id) references weather_stats(id)
 );
 
-create table if not exists weather_anamoly_app.wind_stats (
+create table if not exists weather_anomaly_schema.wind_stats (
 	id varchar(255) not null,
     weather_stats_id varchar(255) not null,
     speed float,
@@ -35,5 +35,3 @@ create table if not exists weather_anamoly_app.wind_stats (
     primary key(id),
     foreign key (weather_stats_id) references weather_stats(id)
 );
-
-commit;
