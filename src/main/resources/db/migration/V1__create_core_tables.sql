@@ -12,9 +12,9 @@ create table if not exists weather_anamoly_app.weather_stats (
     cloudiness_percentage float,
     percentage_of_precipitation float,
     visibility int,
-    timestamp bigint(13),
+    collection_time bigint(13),
     created_time long,
-    primary key (id, timestamp)
+    primary key (id, collection_time)
 );
 
 create table if not exists weather_anamoly_app.weather_description (

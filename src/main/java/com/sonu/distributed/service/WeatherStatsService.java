@@ -6,4 +6,6 @@ public interface WeatherStatsService {
     WeatherStatsEntity create(WeatherStatsEntity entity);
 
     Long findLatestTimestamp();
+
+    WeatherStatsEntity findForecastData(long timestamp);
 }

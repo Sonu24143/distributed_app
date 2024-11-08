@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 public class WeatherForecastDataLoader {
@@ -36,9 +38,14 @@ public class WeatherForecastDataLoader {
             for(ForecastWeatherStatistics forecastWeatherStatistics: forecastWeatherStatisticsCollection.getList()) {
                 if(latestTimestamp == null || (forecastWeatherStatistics.getTimestamp() * 1000) > latestTimestamp) {
                     log.info("Fetched forecast [{}].", forecastWeatherStatistics);
-                    WeatherStatsEntity weatherStatsEntity = forecastWeatherStatistics.convert();
-                    log.info("Converted to entity [{}]", weatherStatsEntity);
-                    weatherStatsService.create(weatherStatsEntity);
+                    // Since stats are generated at intervals of 3 hours, but app expects information at hour granularity
+                    // we synthetically generate 2 filler entities with same parameter value except the time stamp which
+                    // is updated as n, n+1 hour, n+2 hour for forecast of nth hour.
+                    List<WeatherStatsEntity> weatherStatsEntities = forecastWeatherStatistics.convert();
+                    for(WeatherStatsEntity weatherStatsEntity: weatherStatsEntities) {
+                        log.info("Converted to entity [{}]", weatherStatsEntity);
+                        weatherStatsService.create(weatherStatsEntity);
+                    }
                 }
             }
         } catch (Exception e) {

@@ -2,12 +2,13 @@ package com.sonu.distributed.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "weather_stats")
-@Builder
+@NoArgsConstructor
 @Data
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -50,14 +51,15 @@ public class WeatherStatsEntity {
 
     private Integer visibility;
 
-    private Long timestamp;
+    @Column(name = "collection_time", updatable = false)
+    private Long collectionTime;
 
-    @Column(name = "created_time")
+    @Column(name = "created_time", updatable = false)
     private Long createdTime;
 
-    @OneToMany(mappedBy = "weatherStatsEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "weatherStatsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<WeatherDescriptionEntity> weatherDescriptionEntities;
 
-    @OneToOne(mappedBy = "weatherStatsEntity", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "weatherStatsEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private WindStatsEntity windStatsEntity;
 }

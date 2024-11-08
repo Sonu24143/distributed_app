@@ -6,9 +6,12 @@ import com.sonu.distributed.util.LogElapsedTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -34,10 +37,12 @@ public class CurrentWeatherDataLoader {
     private WeatherService weatherService;
 
     @Autowired
-    private KafkaProducer<String, Bytes> kafkaProducer;
+    private KafkaProducer<Long, Bytes> kafkaProducer;
 
     private final AtomicInteger maxRetries = new AtomicInteger(5);
-    JsonSerializer<CurrentWeatherStatistics> jsonSerializer = new JsonSerializer<>();
+    private static final JsonSerializer<CurrentWeatherStatistics> CURRENT_WEATHER_STATISTICS_JSON_SERIALIZER = new JsonSerializer<>();
+    private static final JsonDeserializer<CurrentWeatherStatistics> CURRENT_WEATHER_STATISTICS_JSON_DESERIALIZER = new JsonDeserializer<>();
+    private static final Serde<CurrentWeatherStatistics> CURRENT_WEATHER_STATISTICS_SERDE = Serdes.serdeFrom(CURRENT_WEATHER_STATISTICS_JSON_SERIALIZER, CURRENT_WEATHER_STATISTICS_JSON_DESERIALIZER);
 
     @LogElapsedTime
     @Scheduled(initialDelay = 1000, fixedDelay = 1100)
@@ -49,9 +54,10 @@ public class CurrentWeatherDataLoader {
         }
         try {
             CurrentWeatherStatistics currentWeatherStatistics = weatherService.getCurrentWeather(lattitude, longitude);
+            Long key = ((currentWeatherStatistics.getTimestamp() /*- currentWeatherStatistics.getOffset()*/) * 1000L);
+            currentWeatherStatistics.setTimestamp(key);
             log.info("Fetched current weather details [{}].", currentWeatherStatistics);
-            String key = Long.toString(((currentWeatherStatistics.getTimestamp() - currentWeatherStatistics.getOffset()) * 1000));
-            Bytes value = Bytes.wrap(jsonSerializer.serialize(topicName, currentWeatherStatistics));
+            Bytes value = Bytes.wrap(CURRENT_WEATHER_STATISTICS_SERDE.serializer().serialize(topicName, currentWeatherStatistics));
             for(int i=0; i<duplicationCount; i++) {
                 kafkaProducer.send(new ProducerRecord<>(topicName, key, value));
             }
