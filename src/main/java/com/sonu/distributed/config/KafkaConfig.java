@@ -1,7 +1,9 @@
 package com.sonu.distributed.config;
 
+import com.sonu.distributed.common.Constants;
+import com.sonu.distributed.config.qualifier.AnomalyProcessorStreamBuilderConfig;
+import com.sonu.distributed.config.qualifier.WordCountProcessorStreamBuilderConfig;
 import com.sonu.distributed.exceptions.SkipInvalidMessageHandler;
-import com.sonu.distributed.model.CurrentWeatherStatistics;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -11,13 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
+import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,6 @@ import java.util.Map;
 import static org.apache.kafka.streams.StreamsConfig.*;
 
 @EnableKafka
-@EnableKafkaStreams
 @Configuration
 public class KafkaConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
@@ -61,17 +59,34 @@ public class KafkaConfig {
         return new KafkaProducer<>(map);
     }
 
-    @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
-    KafkaStreamsConfiguration kStreamsConfig() {
-        Map<String, Object> props = new HashMap<>();
+    @Bean(name = Constants.ANOMALY_PROCESSOR_CONFIG)
+    @AnomalyProcessorStreamBuilderConfig
+    StreamsBuilderFactoryBean anomalyProcessorStreamConfig() {
+        Map<String, Object> props = getCommonKafkaStreamProps();
         props.put(APPLICATION_ID_CONFIG, "anomaly-processor");
-        props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
         props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Bytes().getClass().getName());
         props.put(COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
+        return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(props));
+    }
+
+    @Bean(name = Constants.WORD_COUNT_PROCESSOR_CONFIG)
+    @WordCountProcessorStreamBuilderConfig
+    StreamsBuilderFactoryBean wordCountProcessorStreamConfig() {
+        Map<String, Object> props = getCommonKafkaStreamProps();
+        props.put(APPLICATION_ID_CONFIG, "word-count-processor");
+        props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
         props.put(STATESTORE_CACHE_MAX_BYTES_CONFIG, 0);
+        return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(props));
+    }
+
+    private Map<String, Object> getCommonKafkaStreamProps() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(STATE_DIR_CONFIG, "/Users/sonuparekaden/kafka-tmp");
         props.put(DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, SkipInvalidMessageHandler.class);
-        return new KafkaStreamsConfiguration(props);
+        return props;
     }
 }

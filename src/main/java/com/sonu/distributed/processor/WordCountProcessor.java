@@ -1,5 +1,7 @@
-package com.sonu.distributed.service.impl;
+package com.sonu.distributed.processor;
 
+import com.sonu.distributed.common.Constants;
+import com.sonu.distributed.config.qualifier.WordCountProcessorStreamBuilderConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -10,6 +12,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
 import java.util.Arrays;
 
 @Slf4j
@@ -18,7 +21,7 @@ public class WordCountProcessor {
     private static final Serde<String> STRING_SERDE = Serdes.String();
 
     @Autowired
-    public void buildPipeline(StreamsBuilder streamsBuilder) {
+    public void buildPipeline(@WordCountProcessorStreamBuilderConfig StreamsBuilder streamsBuilder) {
         KStream<String, String> messageStream = streamsBuilder.stream("test-input-stream-topic", Consumed.with(STRING_SERDE, STRING_SERDE));
         KTable<String, Long> wordCount = messageStream
                 .mapValues((ValueMapper<String, String>) String::toLowerCase)

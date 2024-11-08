@@ -1,6 +1,7 @@
 package com.sonu.distributed.processor;
 
 import com.sonu.distributed.common.Constants;
+import com.sonu.distributed.config.qualifier.AnomalyProcessorStreamBuilderConfig;
 import com.sonu.distributed.model.CurrentWeatherStatistics;
 import com.sonu.distributed.model.ForecastWeatherStatistics;
 import com.sonu.distributed.model.WeatherAnomalyStatistics;
@@ -16,13 +17,22 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
+
 @Slf4j
 @Component
 public class AnomalyDataProcessor {
+    @Value("${input.topic.name}")
+    private String inputTopicName;
+
+    @Value("${anomaly.topic.name}")
+    private String anomalyTopicName;
+
     @Autowired
     private WeatherStatsService weatherStatsService;
 
@@ -37,15 +47,9 @@ public class AnomalyDataProcessor {
     private static final JsonDeserializer<WeatherAnomalyStatistics> WEATHER_ANOMALY_STATISTICS_JSON_DESERIALIZER = new JsonDeserializer<>(WeatherAnomalyStatistics.class);
     private static final Serde<WeatherAnomalyStatistics> WEATHER_ANOMALY_STATISTICS_SERDE = Serdes.serdeFrom(WEATHER_ANOMALY_STATISTICS_JSON_SERIALIZER, WEATHER_ANOMALY_STATISTICS_JSON_DESERIALIZER);
 
-    @PostConstruct
-    private void init() {
-
-    }
-
-
     @Autowired
-    public void buildPipeline(StreamsBuilder streamsBuilder) {
-        streamsBuilder.stream("current-weather-topic", Consumed.with(Constants.LONG_SERDE, CURRENT_WEATHER_STATISTICS_SERDE).withOffsetResetPolicy(Topology.AutoOffsetReset.LATEST))
+    public void buildPipeline(@AnomalyProcessorStreamBuilderConfig StreamsBuilder streamsBuilder) {
+        streamsBuilder.stream(inputTopicName, Consumed.with(Constants.LONG_SERDE, CURRENT_WEATHER_STATISTICS_SERDE).withOffsetResetPolicy(Topology.AutoOffsetReset.LATEST))
                 .mapValues((key, value) -> {
                     WeatherStatsEntity weatherStatsEntity = null;
                     log.debug("Computing anomaly for weather [{}].", value);
@@ -63,7 +67,7 @@ public class AnomalyDataProcessor {
                     WeatherAnomalyStatistics weatherAnomalyStatistics = new WeatherAnomalyStatistics();
                     return weatherAnomalyStatistics.apply(value);
                 })
-                .to("weather-anomaly-topic", Produced.with(Constants.LONG_SERDE, WEATHER_ANOMALY_STATISTICS_SERDE));
+                .to(anomalyTopicName, Produced.with(Constants.LONG_SERDE, WEATHER_ANOMALY_STATISTICS_SERDE));
 
     }
 }
