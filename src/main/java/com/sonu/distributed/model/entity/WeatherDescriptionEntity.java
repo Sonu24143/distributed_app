@@ -1,14 +1,11 @@
 package com.sonu.distributed.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "weather_description")
-@Builder
+@NoArgsConstructor
 @Data
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

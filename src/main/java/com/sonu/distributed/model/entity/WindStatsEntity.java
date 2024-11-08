@@ -3,11 +3,12 @@ package com.sonu.distributed.model.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Table(name = "wind_stats")
-@Builder
+@NoArgsConstructor
 @Data
 @ToString
 public class WindStatsEntity {
