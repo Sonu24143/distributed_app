@@ -18,7 +18,7 @@ public class ForecastEntityToModelConverter implements Converter<WeatherStatsEnt
                 .map( e -> new Weather(e.getType(), e.getDescription())).toList();
         WeatherStatistics weatherStatistics = new WeatherStatistics(data.getTemperature(), data.getFeelsLike(), data.getTemperatureMin(), data.getTemperatureMax(), data.getPressure(), data.getHumidity(), data.getSeaLevel(), data.getGroundLevel());
         WindStatistics windStatistics = new WindStatistics(data.getWindStatsEntity().getSpeed(), data.getWindStatsEntity().getDegree(), data.getWindStatsEntity().getGust());
-        RainStatistics rainStatistics = new RainStatistics(data.getRainMm());
+        RainStatistics rainStatistics = (data.getRainMm() == null) ? new RainStatistics() : new RainStatistics(data.getRainMm());
         CloudStatistics cloudStatistics = new CloudStatistics(data.getCloudiness());
         DayTimeStatistics dayTimeStatistics = new DayTimeStatistics();
         return new ForecastWeatherStatistics(weathers, weatherStatistics, data.getVisibility(), windStatistics, rainStatistics, cloudStatistics, dayTimeStatistics, data.getCollectionTime(), data.getPrecipitation());

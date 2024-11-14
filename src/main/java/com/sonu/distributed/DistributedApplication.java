@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Slf4j
 @SpringBootApplication
@@ -19,5 +20,7 @@ public class DistributedApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		//do nothing yet
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		System.out.println("Password:[admin], encrypted["+encoder.encode("admin")+"].");
 	}
 }
