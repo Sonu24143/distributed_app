@@ -19,8 +19,6 @@ import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.converter.ByteArrayJsonMessageConverter;
-import org.springframework.kafka.support.converter.JsonMessageConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +69,7 @@ public class KafkaConfig {
         props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
         props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Bytes().getClass().getName());
         props.put(COMMIT_INTERVAL_MS_CONFIG, 1000);
+        props.put(NUM_STREAM_THREADS_CONFIG, 4);
         return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(props));
     }
 
@@ -82,6 +81,7 @@ public class KafkaConfig {
         props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
         props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, WeatherAnomalyStatisticsSerde.class);
         props.put(COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
+        props.put(NUM_STREAM_THREADS_CONFIG, 4);
         return new StreamsBuilderFactoryBean(new KafkaStreamsConfiguration(props));
     }
 

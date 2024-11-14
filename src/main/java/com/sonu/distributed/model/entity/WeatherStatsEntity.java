@@ -2,7 +2,6 @@ package com.sonu.distributed.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 
 import java.util.Set;
 

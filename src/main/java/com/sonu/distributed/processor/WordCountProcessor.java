@@ -1,6 +1,5 @@
 package com.sonu.distributed.processor;
 
-import com.sonu.distributed.common.Constants;
 import com.sonu.distributed.config.qualifier.WordCountProcessorStreamBuilderConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
@@ -12,7 +11,6 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Named;
 import java.util.Arrays;
 
 @Slf4j

@@ -45,7 +45,7 @@ public class CurrentWeatherDataLoader {
     private static final Serde<CurrentWeatherStatistics> CURRENT_WEATHER_STATISTICS_SERDE = Serdes.serdeFrom(CURRENT_WEATHER_STATISTICS_JSON_SERIALIZER, CURRENT_WEATHER_STATISTICS_JSON_DESERIALIZER);
 
     @LogElapsedTime
-    @Scheduled(initialDelay = 1000, fixedDelay = 1100)
+    @Scheduled(initialDelay = 1000, fixedDelay = 2000)
     public void execute() {
         long start = System.currentTimeMillis();
         if(maxRetries.get() <= 0) {

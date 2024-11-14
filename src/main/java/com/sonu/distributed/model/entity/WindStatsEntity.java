@@ -1,7 +1,6 @@
 package com.sonu.distributed.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
