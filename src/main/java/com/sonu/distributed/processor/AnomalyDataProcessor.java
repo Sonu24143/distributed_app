@@ -9,7 +9,6 @@ import com.sonu.distributed.model.WeatherCorrelationData;
 import com.sonu.distributed.model.entity.WeatherStatsEntity;
 import com.sonu.distributed.service.WeatherStatsService;
 import com.sonu.distributed.util.Converter;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
-
-import javax.inject.Named;
 
 @Slf4j
 @Component
@@ -58,7 +55,7 @@ public class AnomalyDataProcessor {
                         ForecastWeatherStatistics forecastWeatherStatistics = converter.convert(weatherStatsEntity);
                         return new WeatherCorrelationData(forecastWeatherStatistics, value);
                     } catch (Exception e) {
-                        log.error("Issue due to invalid forecast data / current weather data.\ntimestamp [{}], forecast [{}].", value.getTimestamp(), weatherStatsEntity);
+                        log.error("Issue due to invalid forecast data / current weather data.\ntimestamp [{}], forecast [{}].", value.getTimestamp(), weatherStatsEntity, e);
                         return new WeatherCorrelationData();
                     }
 
